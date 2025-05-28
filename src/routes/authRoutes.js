@@ -9,6 +9,7 @@ router.post('/user/login', UserController.login);
 
 router.post('/chats', ChatController.getChats);
 router.post('/createChat', ChatController.createChat);
+router.post('/chats/add', ChatController.addMember)
 
 
 

@@ -6,7 +6,7 @@ class Chat {
       let chats = await knex('chat_members')
         .join('users', 'chat_members.user_id', 'users.id')
         .join('chats', 'chat_members.chat_id', 'chats.id')
-        .select('chats.chat_name')
+        .select('chats.chat_name', 'chats.id')
         .where({user_id: user_id})
       return {status: true, error: undefined, data: chats}
     } catch (error) {
@@ -15,6 +15,37 @@ class Chat {
     }
   }
 
+  async getChatById(chat_id, user_id) {
+    let chats = await this.getChats(user_id);
+    let chatt = undefined;
+    
+
+    chats.data.forEach(chat => {
+      if (chat.id == chat_id) {        
+        chatt = chat
+      }
+    });
+
+    return chatt
+
+  }
+
+  async getChatMembers(chat_id) {
+
+    try {
+      let users = await knex('chat_members')
+        .join('users', 'chat_members.user_id', 'users.id')
+        .join('chats', 'chat_members.chat_id', 'chats.id')
+        .select('users.*')
+        .where({chat_id: chat_id});
+      
+      return {status: true, data: users}
+      
+    } catch (error) {
+      return {status: false, data: error}
+    }
+    
+  }
 
   async createChat(is_group, name) {
     try {
@@ -23,6 +54,39 @@ class Chat {
     } catch (error) {
       console.log(error);
       return {status: false, error: error, msg: undefined}
+    }
+  }
+
+  async addMembers(member_id, chat_id, user_id) {
+
+    let chat = await this.getChatById(chat_id, user_id);
+    let control = false;
+
+    if (chat == undefined) {
+      return { status: false, msg: "Chat not found" }
+    }
+
+    let chatMembers = await this.getChatMembers(chat_id);
+    console.log(chatMembers.data);
+    
+
+    chatMembers.data.forEach(member => {
+      if (member.id == member_id) {
+        control = true;
+        return 
+      }
+    });
+
+    if (control) {
+      return { status: false, msg: "User is already in chat"}
+    }
+
+    try {
+    //  await knex('chat_members').insert({user_id: member_id, chat_id: chat_id});
+      return { status: true, msg: "User add on chat"}
+    } catch (error) {
+      console.log(error);
+      return { status: false, msg: error }
     }
   }
 }
