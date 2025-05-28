@@ -1,5 +1,9 @@
 const User = require('../models/User');
 const crypto = require('bcrypt');
+const json = require('jsonwebtoken');
+
+
+const secretKey = process.env.JWT_SECRET_KEY;
 
 function validate(email, username, password) {
   if (email == undefined || email.trim() === '') {
@@ -80,7 +84,11 @@ class UserController {
       res.status(400);
       res.json({error: "Invalid password"});
     } else {
-      res.json({msg1: "Login successful", user: user});
+
+      let token = json.sign(user, secretKey);
+
+
+      res.json({msg: "Login successful", user: user, token: token});
     }
 
   }
