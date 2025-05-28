@@ -3,7 +3,7 @@ const crypto = require('bcrypt');
 require('dotenv').config();
 
 
-const salt = process.env.BCRYPT_SALT;
+const salt = parseInt(process.env.BCRYPT_SALT);
 
 class User {
   async create(username, email, password) {
@@ -26,8 +26,9 @@ class User {
   async findEmail(email) {
     try {
       let emailExist = await knex('users').select().where({email: email});
+      
 
-      if (emailExist != []) {
+      if (emailExist.length != 0) {
         return {status: true, msg: "Email already exist"};
       }
       else {
@@ -40,7 +41,7 @@ class User {
 
   async findByEmail(email) {
     try {
-      let user = await knex('users').select().where({email: email});
+      let user = await knex('users').select().where({email: email});      
 
       if (user.length == 0) {        
         return {status: false, data: "User not found"};
