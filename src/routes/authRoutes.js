@@ -6,10 +6,11 @@ const ChatController = require('../controllers/ChatController');
 
 router.post('/user/create', UserController.create);
 router.post('/user/login', UserController.login);
+router.post('/user/verify', UserController.verifyToken);
 
 router.post('/chats', ChatController.getChats);
-router.post('/createChat', ChatController.createChat);
-router.post('/chats/add', ChatController.addMember)
+router.post('/chats/create', ChatController.createChat);
+router.post('/chats/members/add', ChatController.addMember);
 
 
 

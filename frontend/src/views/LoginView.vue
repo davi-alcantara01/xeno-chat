@@ -41,6 +41,7 @@ export default {
       })
       console.log(result);
       localStorage.setItem('token', result.data.token);
+      this.$router.push({name: 'chats'})
       } catch (error) {
         this.error = error.response.data.error;
       }

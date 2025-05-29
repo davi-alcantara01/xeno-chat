@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const crypto = require('bcrypt');
-const json = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 
 const secretKey = process.env.JWT_SECRET_KEY;
@@ -85,12 +85,43 @@ class UserController {
       res.json({error: "Invalid password"});
     } else {
 
-      let token = json.sign(user, secretKey);
+      let token = jwt.sign(user, secretKey);
 
 
       res.json({msg: "Login successful", user: user, token: token});
     }
 
+  }
+
+  async verifyToken(req, res) {
+    let { token } = req.body;
+
+    if (token == undefined) {
+      res.status(400);
+      res.json({error: "Token is required"})
+      return
+    }
+
+    try {
+      let user = jwt.decode(token);
+    } catch (error) {
+      res.status(400);
+      res.json({error: "Invalid token"});
+      return
+    }
+    let user = jwt.decode(token);
+    
+    
+
+    let userDB = await User.findByEmail(user.email);
+    if (userDB.status == false) {
+      res.status(404);
+      res.json({error: userDB.data});
+      return
+    }
+
+    res.json({msg: "Login successful"});
+  
   }
 };
 

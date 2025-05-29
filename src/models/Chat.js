@@ -47,9 +47,11 @@ class Chat {
     
   }
 
-  async createChat(is_group, name) {
+  async createChat(is_group, name, user_id) {
     try {
-      await knex('chats').insert({is_group: is_group, chat_name: name});
+      let chat_id = await knex('chats').insert({is_group: is_group, chat_name: name});
+      await knex('chat_members').insert({user_id: user_id, chat_id: chat_id[0]});
+      
       return {status: true, error: undefined, msg: "chat created successfully"}
     } catch (error) {
       console.log(error);

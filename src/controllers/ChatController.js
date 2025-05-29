@@ -1,8 +1,12 @@
 const Chat = require('../models/Chat');
+const jwt = require('jsonwebtoken');
 
 class ChatController {
   async getChats(req, res) {
-    let { id } = req.body;
+    let { token } = req.body;
+    let user = jwt.decode(token);
+    
+    let id = user.id;
     if (isNaN(id)) {
       res.status(400);
       res.json({error: "id not acceptable"});
@@ -15,20 +19,26 @@ class ChatController {
   }
 
   async createChat(req, res) {
-    let { name, is_group } = req.body;
+    let { name, is_group ,token } = req.body;
 
     if (name == undefined || name.trim() === '') {
       res.status(400);
-      res.json({error: "Name is required"})
+      res.json({error: "Name is required"});
       return
     }
     if (is_group == undefined || isNaN(is_group)) {
       res.status(400);
-      res.json({error: "is_group is required"})
+      res.json({error: "is_group is required"});
       return
     }
+    if (token == undefined) {
+      res.status(400);
+      res.json({error: "token is required"});
+      return
+    }
+    let user = jwt.decode(token);
 
-    let result = await Chat.createChat(is_group, name);
+    let result = await Chat.createChat(is_group, name, user.id);
 
     if (result.status == false) {
       console.log(result.error);

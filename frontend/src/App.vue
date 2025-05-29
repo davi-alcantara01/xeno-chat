@@ -1,18 +1,36 @@
 <template>
   <div>
-    <NavbarOff/>
+    <NavbarOff v-if="!logged" />
+    <NavbarOn v-else />
     <router-view/>
   </div>
 </template>
 
 <script>
 import NavbarOff from '@/components/NavbarOff.vue'
+import NavbarOn from '@/components/NavbarOn.vue'
+import axios from 'axios'
 
 
 export default {
 
   components: {
-    NavbarOff
+    NavbarOff,
+    NavbarOn
+  },
+  data() {
+    return {
+      logged: false
+    }
+  },
+  created: async function () {
+    let token = localStorage.getItem('token')
+    try {
+      await axios.post("http://localhost:3000/user/verify", {token: token});
+      this.logged = true
+    } catch (error) {
+      this.logged = false;
+    }
   }
 }
 </script>
