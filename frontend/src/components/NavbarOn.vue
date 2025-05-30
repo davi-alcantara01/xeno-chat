@@ -16,6 +16,9 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/chats/create">Create chat</router-link>
             </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/chats/enter">Enter chat</router-link>
+            </li>
           </ul>
         </div>
       </div>
