@@ -85,6 +85,68 @@ class ChatController {
 
   }
 
+  async enterChat(req, res) {
+    let { token_user, token_chat } = req.body;
+
+    if (token_chat == undefined) {
+      res.status(400);
+      res.json({error: "token_chat is required"})
+      return
+    }
+
+    if (token_user == undefined) {
+      res.status(400);
+      res.json({error: "token_user is required"})
+      return
+    }
+
+    let user = jwt.decode(token_user);
+    let chat = jwt.decode(token_chat);
+
+
+    try {
+      let test = user.id;
+      let test2 = chat.id;
+    } catch (error) {
+      res.status(400);
+      res.json({error: "Invalid Token"});
+      return
+    }
+
+    let result = await Chat.enterChat(user.id, chat.id);
+
+    if (result.status == false) {
+      res.status(400);
+      res.json({error: result.msg});
+      return
+    } else {
+      res.json({msg: result.msg})
+    }
+
+
+
+  }
+
+  async generateChatToken(req, res) {
+    let { id } = req.body;
+
+    if (id == undefined || isNaN(id)) {
+      res.status(400);
+      res.json({error: "Id is reequired"});
+      return
+    }
+
+    let result = await Chat.generateChatToken(id);
+    if (result.status == false) {
+      res.json({error : result.error});
+      return
+    } else {
+      res.json({token: result.data});
+      return
+    }
+
+  }
+
   
 }
 

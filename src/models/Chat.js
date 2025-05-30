@@ -1,4 +1,9 @@
+const jwt = require('jsonwebtoken');
 const knex = require('../../connections/database');
+
+const secretKey = process.env.JWT_SECRET_KEY;
+
+
 
 class Chat {
   async getChats(user_id) {
@@ -69,7 +74,6 @@ class Chat {
     }
 
     let chatMembers = await this.getChatMembers(chat_id);
-    console.log(chatMembers.data);
     
 
     chatMembers.data.forEach(member => {
@@ -84,12 +88,48 @@ class Chat {
     }
 
     try {
-    //  await knex('chat_members').insert({user_id: member_id, chat_id: chat_id});
+      await knex('chat_members').insert({user_id: member_id, chat_id: chat_id});
       return { status: true, msg: "User add on chat"}
     } catch (error) {
       console.log(error);
       return { status: false, msg: error }
     }
+  }
+
+  async enterChat(user_id, chat_id) {
+    let control = false;
+
+    let chatMembers = await this.getChatMembers(chat_id);
+    
+
+    chatMembers.data.forEach(member => {
+      if (member.id == user_id) {
+        control = true;
+        return
+      }
+    });
+
+    if (control) {
+      return { status: false, msg: "User is already in chat"}
+    }
+    try {
+      await knex('chat_members').insert({user_id: user_id, chat_id: chat_id});
+      return { status: true, msg: "User add on chat"}
+    } catch (error) {
+      return { status: false, msg: error }
+    }
+  }
+
+  async generateChatToken(chat_id) {
+    let chat = await knex('chats').select().where({ id: chat_id});
+    let token = jwt.sign(chat[0], secretKey);
+    if (chat.length == 0) {
+      return { status: false, data: undefined, error: "Chat not found"}
+    } else {
+      return { status: true, data: token, error: undefined}
+    }
+
+
   }
 }
 
