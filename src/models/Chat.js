@@ -133,7 +133,7 @@ class Chat {
   }
 
   async exitChat(chat_id, user_id) {
-    let chat = this.getChatById(chat_id, user_id);
+    let chat = await this.getChatById(chat_id, user_id);
     if (chat == undefined) {
       return { status: false, msg: "Chat not found in your account"}
     }

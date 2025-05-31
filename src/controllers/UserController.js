@@ -38,11 +38,6 @@ class UserController {
       return
     }
 
-    if (result.status == false) {
-      res.status(400);
-      res.json({error: result.error});
-      return
-    }
 
     try {
 
