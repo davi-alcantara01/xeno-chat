@@ -1,5 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import axios from 'axios';
+
+
+async function middleware(to, from, next) {
+  let token = localStorage.getItem('token');
+
+  try {
+    await axios.post('http://localhost:3000/user/verify', {token: token});
+    next();
+  } catch (error) {
+    next('/login');
+  }
+  
+}
 
 const routes = [
   {
@@ -25,16 +39,19 @@ const routes = [
   {
     path: '/chats',
     name: 'chats',
-    component: () => import('../views/ChatView.vue')
+    beforeEnter: middleware,
+    component: () => import('../views/ChatView.vue'),
   },
   {
     path: '/chats/create',
     name: 'chats-create',
+    beforeEnter: middleware,
     component: () => import('../views/CreateChat.vue')
   },
   {
     path: '/chats/enter',
     name: 'chats-enter',
+    beforeEnter: middleware,
     component: () => import('../views/EnterChat.vue')
   }
   
