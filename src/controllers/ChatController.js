@@ -147,7 +147,31 @@ class ChatController {
 
   }
 
-  
+  async exitChat(req, res) {
+    let { id, user_token } = req.body;
+    if (id == undefined || isNaN(id)) {
+      res.status(400);
+      res.json({error: "Id is required"});
+      return
+    }
+    let user = jwt.decode(user_token);
+    try {
+      user.id
+    } catch (error) {
+      res.status(401);
+      res.json({error: "Invalid token"});
+      return
+    }
+    let result = await Chat.exitChat(id, user.id);
+    if (result.status == false) {
+      res.status(400);
+      res.json({error: result.msg});
+      return
+    } else {
+      res.json({msg: result.msg});
+      return
+    }
+  }
 }
 
 module.exports = new ChatController;

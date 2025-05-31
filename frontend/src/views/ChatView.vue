@@ -14,7 +14,7 @@
         <tr v-for="chat in chats" :key="chat.id">
           <td>{{ chat.chat_name }}</td>
           <td> <button @click="generateToken(chat.id)" class="btn btn-success">Generate token</button> </td>
-          <td> <button class="btn btn-danger">Exit chat</button></td>
+          <td> <button @click="confirmExit(chat.id)" class="btn btn-danger">Exit chat</button></td>
         </tr>
       </tbody>
     </table>
@@ -22,39 +22,77 @@
 </template>
 
 <script>
-import axios from 'axios'
-
-
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
     return {
-      chats: []
-
+      chats: [],
+      id: undefined
     }
   },
-  created: async function() {
+  created: async function () {
     let token = localStorage.getItem('token');
     try {
-      let chats = await axios.post('http://localhost:3000/chats', {token: token})
+      let chats = await axios.post('http://localhost:3000/chats', { token });
       this.chats = chats.data.chats;
-      console.log(this.chats)
     } catch (error) {
       console.log("Error: " + error);
-      this.$router.push({name: 'login'})
+      this.$router.push({ name: 'login' });
     }
   },
   methods: {
     async generateToken(chat_id) {
       try {
-        let token = await axios.post('http://localhost:3000/chats/token', {id: chat_id});
-        console.log(token.data.token);
+        const res = await axios.post('http://localhost:3000/chats/token', { id: chat_id });
+        const token = res.data.token;
+
+        await Swal.fire({
+          title: 'Token generated!',
+          html: `
+            <p>Use this token to enter on chat:</p>
+            <input type="text" value="${token}" id="tokenInput" readonly class="swal2-input">
+            <button onclick="navigator.clipboard.writeText('${token}')" class="swal2-confirm swal2-styled" style="margin-top: 10px;">
+              Copy token
+            </button>
+          `,
+          showConfirmButton: false,
+          showCloseButton: true,
+        });
+
       } catch (error) {
-        console.log(error)
+        console.error(error);
+        Swal.fire('Erro', 'Não foi possível gerar o token.', 'error');
+      }
+    },
+    async confirmExit(chat_id) {
+    const result = await Swal.fire({
+      title: 'Tem certeza?',
+      text: 'Você realmente deseja sair deste chat?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sim, sair',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        let user_token = localStorage.getItem('token');
+        await axios.post('http://localhost:3000/chats/exit', { id: chat_id, user_token: user_token });
+        Swal.fire('Removido!', 'Você saiu do chat.', 'success');
+        this.chats = this.chats.filter(chat => chat.id !== chat_id);
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Erro', 'Não foi possível sair do chat.', 'error');
       }
     }
   }
+  }
 }
+
 </script>
 
 <style>

@@ -13,6 +13,7 @@ router.post('/chats/create', ChatController.createChat);
 router.post('/chats/members/add', ChatController.addMember);
 router.post('/chats/enter', ChatController.enterChat);
 router.post('/chats/token', ChatController.generateChatToken);
+router.post('/chats/exit', ChatController.exitChat);
 
 
 

@@ -131,6 +131,20 @@ class Chat {
 
 
   }
+
+  async exitChat(chat_id, user_id) {
+    let chat = this.getChatById(chat_id, user_id);
+    if (chat == undefined) {
+      return { status: false, msg: "Chat not found in your account"}
+    }
+    try {
+      await knex('chat_members').delete().where({user_id: user_id, chat_id: chat_id});
+      return {status: true, msg: "Chat was deleted successfully"}
+    } catch (error) {
+      return {status: false, msg: error}
+    }
+
+  }
 }
 
 module.exports = new Chat;
