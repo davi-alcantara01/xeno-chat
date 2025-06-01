@@ -5,7 +5,7 @@
       <div>
         <div class="mb-3">
           <label for="chat" class="form-label">Chat Name</label>
-          <input type="text" v-model="chat_name" class="form-control" id="chat" placeholder="Enter chat name" required>
+          <input type="text" v-model="chat_name" class="form-control" id="chatt" placeholder="Enter chat name" required>
         </div>
         <div class="mb-3">
           <select id="isGroup" @change="selectGroup()" class="form-select">
