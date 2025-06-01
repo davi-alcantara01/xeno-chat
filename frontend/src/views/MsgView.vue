@@ -36,6 +36,11 @@ export default {
       let result = await axios.post("http://localhost:3000/message/get", {chat_id: this.chat_id});
       console.log(result);
       this.messages = result.data.messages;
+      this.$nextTick(() => {
+        const chatBox = document.getElementById("chat");
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
       
     } catch (error) {
       console.log(error);
@@ -66,8 +71,17 @@ export default {
     socket.emit('join', data);
     socket.on('update', data => {
       this.messages.push(data);
+      this.$nextTick(() => {
+        const chatBox = document.getElementById("chat");
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+
     });
+  },
+  beforeUnmount() {
+    socket.off('update');
   }
+
 
 
 }
