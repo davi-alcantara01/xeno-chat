@@ -34,12 +34,11 @@ export default {
   methods: {
     async submit() {
       this.error = '';
-      try {
-        let result = await axios.post('http://localhost:3000/user/login', {
+      try {        
+        let result = await axios.post(process.env.VUE_APP_BACKEND_URL + '/user/login', {
         email: this.email,
         password: this.password
       })
-      console.log(result);
       localStorage.setItem('token', result.data.token);
       this.$router.push({name: 'chats'})
       } catch (error) {

@@ -35,17 +35,16 @@ export default {
   created: async function () {
     let token = localStorage.getItem('token');
     try {
-      let chats = await axios.post('http://localhost:3000/chats', { token });
+      let chats = await axios.post(process.env.VUE_APP_BACKEND_URL + '/chats', { token });
       this.chats = chats.data.chats;
     } catch (error) {
-      console.log("Error: " + error);
       this.$router.push({ name: 'login' });
     }
   },
   methods: {
     async generateToken(chat_id) {
       try {
-        const res = await axios.post('http://localhost:3000/chats/token', { id: chat_id });
+        const res = await axios.post(process.env.VUE_APP_BACKEND_URL + '/chats/token', { id: chat_id });
         const token = res.data.token;
 
         await Swal.fire({
@@ -62,7 +61,6 @@ export default {
         });
 
       } catch (error) {
-        console.error(error);
         Swal.fire('Erro', 'Não foi possível gerar o token.', 'error');
       }
     },
@@ -81,11 +79,10 @@ export default {
     if (result.isConfirmed) {
       try {
         let user_token = localStorage.getItem('token');
-        await axios.post('http://localhost:3000/chats/exit', { id: chat_id, user_token: user_token });
+        await axios.post(process.env.VUE_APP_BACKEND_URL + '/chats/exit', { id: chat_id, user_token: user_token });
         Swal.fire('Removido!', 'Você saiu do chat.', 'success');
         this.chats = this.chats.filter(chat => chat.id !== chat_id);
       } catch (error) {
-        console.error(error);
         Swal.fire('Erro', 'Não foi possível sair do chat.', 'error');
       }
     }

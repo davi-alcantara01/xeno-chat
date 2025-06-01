@@ -20,7 +20,7 @@
 import axios from 'axios';
 import {io} from 'socket.io-client'
 
-const socket = io('http://localhost:3000');
+const socket = io(process.env.VUE_APP_BACKEND_URL);
 
 export default {
   props: ['chatName'],
@@ -33,8 +33,7 @@ export default {
   },
   created: async function() {
     try {
-      let result = await axios.post("http://localhost:3000/message/get", {chat_id: this.chat_id});
-      console.log(result);
+      let result = await axios.post(process.env.VUE_APP_BACKEND_URL + "/message/get", {chat_id: this.chat_id});
       this.messages = result.data.messages;
       this.$nextTick(() => {
         const chatBox = document.getElementById("chat");

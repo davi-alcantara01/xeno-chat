@@ -39,11 +39,10 @@ export default {
     async create() {
       try {
         let token = localStorage.getItem('token');
-        await axios.post('http://localhost:3000/chats/create', {token: token, name: this.chat_name, is_group: this.is_group});
+        await axios.post(process.env.VUE_APP_BACKEND_URL + '/chats/create', {token: token, name: this.chat_name, is_group: this.is_group});
         this.error = '';
         this.$router.push({name: 'chats'});
       } catch (error) {
-        console.log(error);
         this.error = error;
       }
     }

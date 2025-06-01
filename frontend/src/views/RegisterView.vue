@@ -5,24 +5,48 @@
       <div>
         <div class="mb-3">
           <label for="email" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+          <input type="email" v-model="email" class="form-control" id="email" placeholder="Enter email" required>
         </div>
         <div class="mb-3">
           <label class="form-label">Username</label>
-          <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+          <input type="text" v-model="username" class="form-control" id="username" placeholder="Enter username" required>
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Password" required>
+          <input type="password" v-model="password" class="form-control" id="password" placeholder="Password" required>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <button type="submit" @click="register()" class="btn btn-primary w-100">Login</button>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-// No JS logic as requested
+<script>
+import axios from 'axios'
+
+export default {
+  data() {
+    return {
+      email: '',
+      username: '',
+      password: ''
+    }
+  },
+  methods: {
+    async register() {
+      try {
+        await axios.post(process.env.VUE_APP_BACKEND_URL + '/user/create', {
+          email: this.email,
+          username: this.username,
+          password: this.password
+        });
+        this.$router.push({name: 'login'});
+      } catch (error) {
+        alert('Erro! Tente novamente');
+      }
+    }
+  }
+}
 </script>
 
 <style scoped>

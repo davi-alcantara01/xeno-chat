@@ -28,11 +28,10 @@ export default {
     async enter() {
       try {
         let token_user = localStorage.getItem('token');
-        let result = await axios.post('http://localhost:3000/chats/enter', {
+        await axios.post(process.env.VUE_APP_BACKEND_URL + '/chats/enter', {
           token_user: token_user,
           token_chat: this.token
         });        
-        console.log(result);
         
         this.$router.push({name: 'chats'});
       } catch (error) {

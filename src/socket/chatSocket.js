@@ -6,7 +6,6 @@ module.exports = (io) => {
     socket.on('join', (data) => {
       try {
         let user = jwt.decode(data.token);
-        console.log("Usuário: " + user.username + " joined the chat");
         socket.join(data.chat_id);
       } catch (error) {
         console.log("Erro ao se conctar ao servidor: " + error);
@@ -32,7 +31,6 @@ module.exports = (io) => {
     });
 
     socket.on('disconnect', () => {
-      console.log("Usuário desconectado: ", socket.id);
     })
 
   })
