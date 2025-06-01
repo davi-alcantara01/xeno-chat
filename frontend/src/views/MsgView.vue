@@ -7,10 +7,10 @@
       </div>
 
     </div>
-    <input type="text" class="form-control" id="msg" placeholder="Digite sua mensagem aqui">
+    <input type="text" v-model="msg" class="form-control" id="msg" placeholder="Digite sua mensagem aqui">
     <br>
     <div class="d-grid gap-2">
-     <button id="btn" class="btn btn-primary btn-lg">Enviar</button> 
+     <button id="btn" @click="send()" class="btn btn-primary btn-lg">Enviar</button> 
     </div>
 
   </div>
@@ -18,13 +18,17 @@
 
 <script>
 import axios from 'axios';
+import {io} from 'socket.io-client'
+
+const socket = io('http://localhost:3000');
 
 export default {
   props: ['chatName'],
   data() {
     return {
       chat_id: this.$route.query.chat_id,
-      messages: []
+      messages: [],
+      msg: ''
     }
   },
   created: async function() {
@@ -37,6 +41,32 @@ export default {
       console.log(error);
       
     }
+  },
+
+  methods: {
+    send() {
+      if (this.msg.trim() === '' || this.msg == undefined) {
+        return
+      }
+      let data = {
+        token: localStorage.getItem('token'),
+        content: this.msg,
+        chat_id: this.$route.query.chat_id
+      }
+      socket.emit('send_message', data);
+      this.msg = '';
+    }
+  },
+  mounted() {
+    socket.emit('connection');
+    let data = {
+      token: localStorage.getItem('token'),
+      chat_id: this.$route.query.chat_id
+    }
+    socket.emit('join', data);
+    socket.on('update', data => {
+      this.messages.push(data);
+    });
   }
 
 
