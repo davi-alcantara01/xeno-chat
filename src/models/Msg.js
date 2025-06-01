@@ -3,7 +3,7 @@ const Chat = require('../models/Chat');
 
 
 class Message {
-  async saveMsg(user_id, chat_id, content) {
+  async saveMsg(user_id, user, chat_id, content) {
     let control = false;
 
     let chatMembers = await Chat.getChatMembers(chat_id);
@@ -21,6 +21,7 @@ class Message {
     }
     try {
       let msg = {
+        sender: user,
         sender_id: user_id,
         chat_id: chat_id,
         content: content

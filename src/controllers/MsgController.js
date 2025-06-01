@@ -34,7 +34,7 @@ class MsgController {
     }
 
     try {
-      let result = await Msg.saveMsg(user.id, chat_id, content);
+      let result = await Msg.saveMsg(user.id, user.username, chat_id, content);
       if (result.status == true) {
         res.json({msg: "Message was sent"});
         return

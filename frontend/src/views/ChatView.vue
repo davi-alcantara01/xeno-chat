@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     
-    <h1>Sala de chats</h1>
+    <h1>Chat room</h1>
     <table class="table table-success">
       <thead>
         <tr>
@@ -12,7 +12,7 @@
       </thead>
       <tbody>
         <tr v-for="chat in chats" :key="chat.id">
-          <td>{{ chat.chat_name }}</td>
+          <td><router-link :to="{name: 'message',params: {chatName: chat.chat_name}, query: { chat_id: chat.id }}" >{{ chat.chat_name }}</router-link></td>
           <td> <button @click="generateToken(chat.id)" class="btn btn-success">Generate token</button> </td>
           <td> <button @click="confirmExit(chat.id)" class="btn btn-danger">Exit chat</button></td>
         </tr>

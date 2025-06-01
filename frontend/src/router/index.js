@@ -53,6 +53,13 @@ const routes = [
     name: 'chats-enter',
     beforeEnter: middleware,
     component: () => import('../views/EnterChat.vue')
+  },
+  {
+    path: '/chats/:chatName',
+    name: 'message',
+    beforeEnter: middleware,
+    component: () => import('../views/MsgView.vue'),
+    props: true
   }
   
 ]
