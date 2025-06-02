@@ -10,7 +10,7 @@ const PORT = 3000;
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:8080',
+    origin: ['http://localhost:8080', 'https://xeno-chat.netlify.app'],
     methods: ['GET', 'POST']
   }
 });
