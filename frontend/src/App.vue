@@ -26,7 +26,7 @@ export default {
   created: async function () {
     let token = localStorage.getItem('token')
     try {
-      await axios.post("http://localhost:3000/user/verify", {token: token});
+      await axios.post(process.env.VUE_APP_BACKEND_URL + "/user/verify", {token: token});
       this.logged = true
     } catch (error) {
       this.logged = false;
